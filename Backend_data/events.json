@@ -1,0 +1,160 @@
+{
+  "users": [
+    {
+      "name": "Ignacio Doe",
+      "image": "https://global-uploads.webflow.com/5eecfecbe625d195e35b89f2/624bfb093da7d92733c001c0_Ignacio%20Villafruela%20Rodr%C3%ADguez.jpg",
+      "id": 1
+    },
+    {
+      "name": "Jane Bennett",
+      "image": "https://global-uploads.webflow.com/5eecfecbe625d195e35b89f2/624bfb401d7131c760ca1c63_Elieska%20Lensink.jpg",
+      "id": 2
+    },
+    {
+      "name": "Jeroen Mulder",
+      "image": "https://res.cloudinary.com/dqwxez1us/image/upload/v1726232297/bvp9q7rzcxztugnuvswi.webp",
+      "id": 3
+    }
+  ],
+  "events": [
+    {
+      "title": "Trampoline party",
+      "description": "Bounce around with your friends",
+      "image": "https://i.pinimg.com/736x/3d/2f/af/3d2faf4e3188d34a9fcdc00df59e77b0.jpg",
+      "location": "My back yard",
+      "startTime": "2023-03-10T18:00",
+      "endTime": "2023-03-10T17:00:00.000Z",
+      "categoryIds": [
+        2
+      ],
+      "userId": 1,
+      "createdBy": 1,
+      "id": 1
+    },
+    {
+      "title": "Laser Tag mania",
+      "description": "Let's play laser tag!",
+      "image": "https://www.ctvnews.ca/polopoly_fs/1.5118552.1600965663!/httpImage/image.jpg_gen/derivatives/landscape_1020/image.jpg",
+      "location": "Blinded by the Lights Laser Tag, 15 Main St.",
+      "startTime": "2023-04-06T18:46",
+      "endTime": "2023-04-06T17:46",
+      "categoryIds": [
+        2
+      ],
+      "userId": 1,
+      "createdBy": 1,
+      "id": 2
+    },
+    {
+      "title": "Badminton game",
+      "description": "Hit that shuttle!",
+      "startTime": "2024-09-18T16:10",
+      "endTime": "2024-09-18T19:10",
+      "image": "https://wincacademy.github.io/webpages/media/pexels-vladvictoria-2202685.jpg",
+      "location": "Badminton court",
+      "id": 3
+    },
+    {
+      "title": "Yoga",
+      "description": "It's a bit of a stretch.",
+      "image": "https://wincacademy.github.io/webpages/media/pexels-gabby-k-5384538.jpg",
+      "location": "Shavasana Yoga School",
+      "startTime": "2023-03-09T06:00:00.000Z",
+      "endTime": "2023-03-09T07:00:00.000Z",
+      "categoryIds": [
+        3
+      ],
+      "userId": 2,
+      "createdBy": 2,
+      "id": 4
+    },
+    {
+      "title": "Cooking Class for Beginners",
+      "description": "Join us for a fun and interactive cooking class where we’ll cover basic cooking techniques and easy recipes. No experience required!",
+      "image": "https://res.cloudinary.com/dqwxez1us/image/upload/v1726232250/lzy9sdnadnxclhsoe1vc.webp",
+      "location": "Culinary Studio, 123 Main Street",
+      "startTime": "2024-09-30T18:00",
+      "endTime": "2024-09-30T21:00",
+      "categoryIds": [
+        4
+      ],
+      "userId": 3,
+      "createdBy": 3,
+      "id": 5
+    },
+    {
+      "title": "Liefdeswandeling in het Park",
+      "description": " Een romantische wandeling voor singles om elkaar te ontmoeten en te genieten van de natuur.",
+      "image": "https://res.cloudinary.com/dqwxez1us/image/upload/v1726480390/pniezk6hli1aqg9gf3sv.webp",
+      "location": "Centraal Park",
+      "startTime": "2024-09-23T14:00",
+      "endTime": "2024-09-23T16:00",
+      "categoryIds": [
+        5
+      ],
+      "userId": "3",
+      "createdBy": "3",
+      "id": 6
+    },
+    {
+      "title": "Dans en Match",
+      "description": "Swing de nacht weg en vind je danspartner op de dansvloer.",
+      "startTime": "2024-09-26T20:00",
+      "endTime": "2024-09-26T23:00",
+      "image": "https://res.cloudinary.com/dqwxez1us/image/upload/v1726738405/crzcjnjkua93juwtfwco.webp",
+      "location": "Club Hartslag",
+      "id": 7
+    },
+    {
+      "title": "Speeddating Avond",
+      "description": "Een snelle en leuke manier om veel singles in één avond te ontmoeten.",
+      "image": "https://res.cloudinary.com/dqwxez1us/image/upload/v1726480590/uppd0aixclatbgars23r.webp",
+      "location": "Het Grand Café",
+      "startTime": "2024-10-01T19:00",
+      "endTime": "2024-10-01T21:00",
+      "categoryIds": [
+        5
+      ],
+      "userId": "3",
+      "createdBy": "3",
+      "id": 8
+    },
+    {
+      "title": "Kookdate Nacht",
+      "description": "Leer nieuwe mensen kennen terwijl je samen een heerlijke maaltijd bereidt.",
+      "startTime": "2024-09-20T18:00",
+      "endTime": "2024-09-20T21:00",
+      "image": "https://res.cloudinary.com/dqwxez1us/image/upload/v1726734354/ha0nhnjlvvi6jjuoifil.jpg",
+      "id": 9
+    }
+  ],
+  "categories": [
+    {
+      "name": "sports",
+      "id": 1
+    },
+    {
+      "name": "games",
+      "id": 2
+    },
+    {
+      "name": "relaxation",
+      "id": 3
+    },
+    {
+      "name": "Cooking",
+      "id": 4
+    },
+    {
+      "name": "Dating",
+      "id": 5
+    }
+  ],
+  "attendees": [
+    {
+      "name": "Jeroen Mulder",
+      "eventId": "3",
+      "id": 3
+    }
+  ]
+}
