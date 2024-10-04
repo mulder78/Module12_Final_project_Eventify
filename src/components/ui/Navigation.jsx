@@ -6,7 +6,7 @@ import { Image } from "@chakra-ui/react";
 export const Navigation = () => {
   return (
     <Box bg="blue.400" p={4} color="white">
-      <Flex justify="space-between" align="center" maxW="1400px" mx="auto">
+      <Flex gap= {6} align="center" maxW="1400px" mx="auto">
         {/* Wrap the Image inside a Link */}
         <ChakraLink as={Link} to="/">
           <Image
@@ -24,7 +24,7 @@ export const Navigation = () => {
             _hover={{ textDecoration: "underline" }}
             color="white"
           >
-            Events
+            EventsPage
           </ChakraLink>
           <ChakraLink
             as={Link}

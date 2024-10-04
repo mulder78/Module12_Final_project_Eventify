@@ -12,10 +12,10 @@ import {
   Checkbox,
   VStack,
 } from "@chakra-ui/react";
-import  {FormControlComponent}  from "./EventsForm/FormControlComponent";
-import  {ImageUploadComponent}  from "./ui/ImageUploadComponent";
-import  {CategorySelectComponent}  from "./EventsForm/CategorySelectComponent";
-import  {uploadImageToCloudinary}  from "./ui/uploadImageToCloudinary";
+import { FormControlComponent } from "./EventsForm/FormControlComponent";
+import { ImageUploadComponent } from "./ui/ImageUploadComponent";
+import { CategorySelectComponent } from "./EventsForm/CategorySelectComponent";
+import { uploadImageToCloudinary } from "./ui/uploadImageToCloudinary";
 import { ScrollToTopButton } from "../components/ui/ScrollToTopButton";
 import { useNavigate } from "react-router-dom";
 
@@ -43,21 +43,40 @@ export const EventForm = () => {
 
   useEffect(() => {
     const fetchCategories = async () => {
-      const res = await fetch("http://localhost:3000/categories");
-      const data = await res.json();
-      setCategories(data);
+      try {
+        const res = await fetch("http://localhost:3000/categories");
+        if (!res.ok) {
+          throw new Error(`Error fetching categories: ${res.statusText}`);
+        }
+        const data = await res.json();
+        setCategories(data);
+      } catch (error) {
+        console.error("Failed to fetch categories:", error);
+        // Hier kun je eventueel een state bijhouden om een foutmelding weer te geven
+      }
     };
+
     fetchCategories();
   }, []);
 
   useEffect(() => {
     const fetchUsers = async () => {
-      const res = await fetch("http://localhost:3000/users");
-      const data = await res.json();
-      setUsers(data);
+      try {
+        const res = await fetch("http://localhost:3000/users");
+        if (!res.ok) {
+          throw new Error(`Error fetching users: ${res.statusText}`);
+        }
+        const data = await res.json();
+        setUsers(data);
+      } catch (error) {
+        console.error("Failed to fetch users:", error);
+        // Hier kun je eventueel een state bijhouden om een foutmelding weer te geven
+      }
     };
+
     fetchUsers();
   }, []);
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -314,7 +333,7 @@ export const EventForm = () => {
                           placeholder="Enter user name"
                         />
                       </FormControl>
-                      <FormControl mt={4}>
+                      <FormControl mt={4} mb= {4}>
                         <FormLabel>New User Image</FormLabel>
                         <Input type="file" onChange={handleUserImageUpload} />
                       </FormControl>
@@ -324,22 +343,24 @@ export const EventForm = () => {
               </Box>
             )}
           </FormControl>
-          <Flex gap= {2}>
-            <Button
-              type="submit"
-              isLoading={loading}
-              colorScheme="blue"
-              size="md"
-              width="min"
-            >
-              Add Event
-            </Button>
+          <Flex  justify="space-between"  >
             <Button
               onClick={() => navigate("/")}
               colorScheme="gray"
               size={["sm", "sm", "md"]}
+              mt= {4}
             >
-             CANCEL
+              CANCEL
+            </Button>
+            <Button
+              type="submit"
+              isLoading={loading}
+              colorScheme="teal"
+              size="md"
+              width="min"
+              mt= {4}
+            >
+              Add Event
             </Button>
           </Flex>
         </VStack>

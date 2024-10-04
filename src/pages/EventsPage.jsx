@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
   Box,
   Heading,
@@ -10,15 +10,17 @@ import {
   Flex,
   Text,
 } from "@chakra-ui/react";
-import { EventsCard } from "../components/EventsPage/EventsCard"; // Import the EventCard component
-import { ScrollToTopButton }  from "../components/ui/ScrollToTopButton";
+import { EventsCard } from "../components/EventsPage/EventsCard";
+import { ScrollToTopButton } from "../components/ui/ScrollToTopButton";
 
 export const EventsPage = () => {
   const [events, setEvents] = useState([]);
-  const [categories, setCategories] = useState([]); // For filtering
-  const [searchTerm, setSearchTerm] = useState(""); // Search input
-  const [selectedCategory, setSelectedCategory] = useState(""); // Selected category filter
-  const [isLoading, setIsLoading] = useState(true); // For animation purposes
+  const [categories, setCategories] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [error, setError] = useState(null);
+
+  const initialLoad = useRef(true); // Use useRef to track the initial page load
 
   // Fetch events and categories
   useEffect(() => {
@@ -31,13 +33,15 @@ export const EventsPage = () => {
           setEvents(data);
         } else {
           console.error("Events data is not an array:", data);
-          setEvents([]); // Fallback naar lege array als het geen array is
+          setEvents([]);
+          setError("Er is iets misgegaan bij het ophalen van de evenementen.");
         }
       } catch (error) {
         console.error("Error fetching events:", error);
-        setEvents([]); // Fallback naar lege array bij fout
-      } finally {
-        setIsLoading(false);
+        setEvents([]);
+        setError(
+          "Er kan geen verbinding worden gemaakt met de server. Probeer het later opnieuw."
+        );
       }
     };
 
@@ -50,11 +54,11 @@ export const EventsPage = () => {
           setCategories(data);
         } else {
           console.error("Categories data is not an array:", data);
-          setCategories([]); // Fallback naar lege array als het geen array is
+          setCategories([]);
         }
       } catch (error) {
         console.error("Error fetching categories:", error);
-        setCategories([]); // Fallback naar lege array bij fout
+        setCategories([]);
       }
     };
 
@@ -62,7 +66,6 @@ export const EventsPage = () => {
     fetchCategories();
   }, []);
 
-  // Reset search and filter
   const handleReset = () => {
     setSearchTerm("");
     setSelectedCategory("");
@@ -96,7 +99,7 @@ export const EventsPage = () => {
       <Stack
         direction={{ base: "column", sm: "row" }}
         spacing={4}
-        mb={["8","10"]} 
+        mb={["8", "10"]}
         align="center"
         justify="center"
       >
@@ -126,31 +129,38 @@ export const EventsPage = () => {
         </Button>
       </Stack>
 
-      {/* Render Filtered Events with Animation */}
-      <Flex wrap="wrap" justify="center" gap={[4, 6]} mb={6}  >
-        {filteredEvents.length > 0 ? (
-          filteredEvents.map((event, index) => (
-            <ScaleFade
-              key={event.id}
-              initialScale={0.9}
-              in={!isLoading}
-              delay={index * 0.1}
-            >
-              <EventsCard event={event} />
-            </ScaleFade>
-          ))
-        ) : (
-          <Box textAlign="center" width="100%" mt="6">
-            <Text fontSize="lg" color="gray.500">
-              No events found.
-            </Text>
-          </Box>
-        )}
-      </Flex>
+      {/* Error message if events cannot be fetched */}
+      {error ? (
+        <Box textAlign="center" width="100%" mt="6">
+          <Text fontSize="lg" color="red.500">
+            {error}
+          </Text>
+        </Box>
+      ) : (
+        /* Render Filtered Events with Animation */
+        <Flex wrap="wrap" justify="center" gap={[4, 6]} mb={6}>
+          {filteredEvents.length > 0 ? (
+            filteredEvents.map((event, index) => (
+              <ScaleFade
+                key={event.id}
+                initialScale={0.9}
+                in={initialLoad.current} // Use initialLoad ref to control animation
+                delay={index * 0.1}
+              >
+                <EventsCard event={event} />
+              </ScaleFade>
+            ))
+          ) : (
+            <Box textAlign="center" width="100%" mt="6">
+              <Text fontSize="lg" color="gray.500">
+                Geen evenementen gevonden.
+              </Text>
+            </Box>
+          )}
+        </Flex>
+      )}
 
       <ScrollToTopButton />
     </Box>
   );
 };
-
-

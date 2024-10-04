@@ -1,4 +1,3 @@
-// src/components/ui/ImageUploadComponent.jsx
 import React from "react";
 import { Box, Button, Input, Stack, Image } from "@chakra-ui/react";
 
@@ -28,26 +27,34 @@ export const ImageUploadComponent = ({
       </Stack>
 
       {imageOption === "url" ? (
-        <Input
-          placeholder="Enter Image URL"
-          value={imageUrl}
-          onChange={(e) => setImageUrl(e.target.value)}
-          mb="4"
-        />
+        <>
+          <Input
+            placeholder="Enter Image URL"
+            value={imageUrl}
+            onChange={(e) => setImageUrl(e.target.value)}
+            mb="4"
+          />
+          {/* Render the preview if imageUrl is set */}
+          {imageUrl && (
+            <Image
+              src={imageUrl}
+              alt="URL preview"
+              maxWidth="200px"
+              mt="4"
+              borderRadius="md"
+              boxShadow="md"
+            />
+          )}
+        </>
       ) : (
-        <Input
-          type="file"
-          accept="image/*"
-          onChange={uploadImage}
-          mb="6"
-        />
+        <Input type="file" accept="image/*" onChange={uploadImage} mb="6" />
       )}
 
       {imageUploadUrl && (
         <Image
           src={imageUploadUrl}
           alt="Uploaded preview"
-          maxWidth="100%"
+          maxWidth="200px"
           mt="4"
           borderRadius="md"
           boxShadow="md"
@@ -56,6 +63,3 @@ export const ImageUploadComponent = ({
     </Box>
   );
 };
-
-
-

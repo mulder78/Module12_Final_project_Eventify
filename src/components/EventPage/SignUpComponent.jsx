@@ -21,7 +21,7 @@ export const SignUpComponent = ({ attendeeName, setAttendeeName, handleSignUp })
     </FormControl>
     </CardBody>
     <CardFooter>
-    <Button colorScheme="blue" onClick={handleSignUp} size={["sm", "md"]}>
+    <Button colorScheme="teal" onClick={handleSignUp} size={["sm", "md"]}>
       Sign Up
     </Button>
 

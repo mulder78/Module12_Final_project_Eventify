@@ -24,7 +24,7 @@ import {
 const uploadImageToCloudinary = async (file) => {
   const formData = new FormData();
   formData.append("file", file);
-  formData.append("upload_preset", "vz1056oo-Events");
+  formData.append("upload_preset", "vz1056oo-Events"); // vervang door je upload preset
 
   const response = await fetch(
     "https://api.cloudinary.com/v1_1/dqwxez1us/image/upload",
@@ -39,7 +39,7 @@ const uploadImageToCloudinary = async (file) => {
   }
 
   const data = await response.json();
-  return data.secure_url;
+  return data.secure_url; // Retourneert de veilige URL van de geüploade afbeelding
 };
 
 export const EventPage = () => {
@@ -51,45 +51,41 @@ export const EventPage = () => {
   const [user, setUser] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
-  const [newImageFile, setNewImageFile] = useState(null);
-  const [newImageURL, setNewImageURL] = useState("");
-  const [previewImageURL, setPreviewImageURL] = useState("");
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [startTime, setStartTime] = useState("");
+  const [endTime, setEndTime] = useState("");
+  const [location, setLocation] = useState(""); // Locatie state
+  const [newImageFile, setNewImageFile] = useState(null); // State voor nieuwe afbeelding
+  const [newImageURL, setNewImageURL] = useState(""); // State voor nieuwe afbeeldings-URL
+  const [previewImageURL, setPreviewImageURL] = useState(""); // State voor voorbeeld afbeelding
   const [isRemoving, setIsRemoving] = useState(false);
   const [attendees, setAttendees] = useState([]);
   const [attendeeName, setAttendeeName] = useState("");
   const [selectedAttendee, setSelectedAttendee] = useState(null);
 
-  // Combineer event details in één useState
-  const [eventDetails, setEventDetails] = useState({
-    title: "",
-    description: "",
-    startTime: "",
-    endTime: "",
-    location: "",
-  });
-
   useEffect(() => {
     const fetchEventAndUser = async () => {
       try {
-        const eventResponse = await fetch(
-          `http://localhost:3000/events/${eventId}`
-        );
-        const eventData = await eventResponse.json();
+        const eventResponse = fetch(`http://localhost:3000/events/${eventId}`);
+        const eventData = await eventResponse.then((res) => res.json());
 
-        const userResponse = await fetch(
+        const userResponse = fetch(
           `http://localhost:3000/users/${eventData.createdBy}`
         );
-        const userData = await userResponse.json();
+        const userData = await userResponse.then((res) => res.json());
 
-        setEvent(eventData);
-        setEventDetails({
-          title: eventData.title,
-          description: eventData.description,
-          startTime: eventData.startTime,
-          endTime: eventData.endTime,
-          location: eventData.location,
-        });
-        setUser(userData);
+        // Parallel beide fetches laten uitvoeren
+        const [event, user] = await Promise.all([eventData, userData]);
+
+        // Data instellen
+        setEvent(event);
+        setTitle(event.title);
+        setDescription(event.description);
+        setStartTime(event.startTime);
+        setEndTime(event.endTime);
+        setLocation(event.location);
+        setUser(user);
       } catch (error) {
         console.error("Error fetching event or user:", error);
       }
@@ -97,27 +93,25 @@ export const EventPage = () => {
 
     fetchEventAndUser();
   }, [eventId]);
-
   // Functie om de velden te resetten
   const resetFields = () => {
-    setEventDetails({
-      title: event.title,
-      description: event.description,
-      startTime: event.startTime,
-      endTime: event.endTime,
-      location: event.location,
-    });
+    setTitle(event.title);
+    setDescription(event.description);
+    setStartTime(event.startTime);
+    setEndTime(event.endTime);
+    setLocation(event.location);
     setNewImageFile(null);
     setNewImageURL("");
-    setPreviewImageURL("");
+    setPreviewImageURL(""); // Reset de voorbeeld afbeelding
     setIsEditing(false);
   };
 
   // Functie om de bewerking op te slaan
   const handleEdit = async () => {
-    let imageUrl = event.image;
+    let imageUrl = event.image; // Bestaande afbeelding
 
     try {
+      // Als er een nieuwe afbeelding is geüpload, upload deze naar Cloudinary
       if (newImageFile) {
         try {
           imageUrl = await uploadImageToCloudinary(newImageFile);
@@ -132,7 +126,7 @@ export const EventPage = () => {
           return;
         }
       } else if (newImageURL) {
-        imageUrl = newImageURL;
+        imageUrl = newImageURL; // Gebruik de nieuwe afbeeldings-URL
       }
 
       // Update het event
@@ -140,12 +134,16 @@ export const EventPage = () => {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          ...eventDetails, // gebruik de gecombineerde eventDetails state
+          title,
+          description,
+          startTime,
+          endTime,
+          location,
           image: imageUrl,
-          categoryIds: event.categoryIds,
-          userId: event.userId ?? eventDetails.userId, // Zorg dat de userId blijft behouden
-          createdBy: event.createdBy ?? eventDetails.createdBy, // Zorg dat createdBy blijft behouden
-        }),
+          categoryIds: event.categoryIds, // Voeg categoryIds toe
+          userId: event.userId, // Voeg userId toe
+          createdBy: event.createdBy, // Voeg createdBy toe
+        }), // Voeg afbeelding en andere waarden toe
       });
 
       if (!response.ok) {
@@ -153,7 +151,7 @@ export const EventPage = () => {
       }
 
       const data = await response.json();
-      setEvent(data);
+      setEvent(data); // Werk het event bij met de nieuwe data
 
       toast({
         title: "Event updated.",
@@ -162,7 +160,9 @@ export const EventPage = () => {
         isClosable: true,
       });
 
-      resetFields();
+      resetFields(); // Reset velden na succesvol opslaan
+
+      // Paginavernieuwing om de velden te verversen
       window.location.reload();
     } catch (error) {
       toast({
@@ -176,66 +176,33 @@ export const EventPage = () => {
   };
 
   // Functie om het event te verwijderen
- const handleDelete = async () => {
-   try {
-     // Stap 1: Verwijder het evenement
-     const deleteResponse = await fetch(
-       `http://localhost:3000/events/${eventId}`,
-       {
-         method: "DELETE",
-       }
-     );
-
-     if (!deleteResponse.ok) {
-       throw new Error("Failed to delete event");
-     }
-
-     // Stap 2: Haal alle evenementen op
-     const eventsResponse = await fetch("http://localhost:3000/events");
-     const events = await eventsResponse.json();
-
-     // Verzamel alle categorieën die nog in gebruik zijn
-     const usedCategoryIds = new Set();
-     events.forEach((event) => {
-       event.categoryIds.forEach((id) => usedCategoryIds.add(id));
-     });
-
-     // Stap 3: Haal alle categorieën op
-     const categoriesResponse = await fetch("http://localhost:3000/categories");
-     const categories = await categoriesResponse.json();
-
-     // Zoek naar ongebruikte categorieën
-     const unusedCategories = categories.filter(
-       (category) => !usedCategoryIds.has(category.id)
-     );
-
-     // Stap 4: Verwijder ongebruikte categorieën
-     await Promise.all(
-       unusedCategories.map((category) =>
-         fetch(`http://localhost:3000/categories/${category.id}`, {
-           method: "DELETE",
-         })
-       )
-     );
-
-     // Toon succesbericht en navigeer weg
-     toast({
-       title: "Event deleted.",
-       status: "success",
-       duration: 5000,
-       isClosable: true,
-     });
-     navigate("/");
-   } catch (error) {
-     toast({
-       title: "An error occurred.",
-       description: error.message,
-       status: "error",
-       duration: 5000,
-       isClosable: true,
-     });
-   }
- };
+  const handleDelete = () => {
+    fetch(`http://localhost:3000/events/${eventId}`, {
+      method: "DELETE",
+    })
+      .then((response) => {
+        if (response.ok) {
+          toast({
+            title: "Event deleted.",
+            status: "success",
+            duration: 5000,
+            isClosable: true,
+          });
+          navigate("/");
+        } else {
+          throw new Error("Failed to delete event");
+        }
+      })
+      .catch((error) => {
+        toast({
+          title: "An error occurred.",
+          description: error.message,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
+      });
+  };
 
   // Functie om een voorbeeld van de nieuwe afbeelding weer te geven
   const handleImageUpload = (e) => {
@@ -245,7 +212,6 @@ export const EventPage = () => {
     // Voorbeeld van de afbeelding tonen
     if (file) {
       const reader = new FileReader();
-
       reader.onloadend = () => {
         setPreviewImageURL(reader.result);
       };
@@ -371,24 +337,16 @@ export const EventPage = () => {
           isOpen={isEditing}
           onClose={resetFields}
           event={event}
-          title={eventDetails.title}
-          setTitle={(title) => setEventDetails((prev) => ({ ...prev, title }))}
-          description={eventDetails.description}
-          setDescription={(description) =>
-            setEventDetails((prev) => ({ ...prev, description }))
-          }
-          location={eventDetails.location}
-          setLocation={(location) =>
-            setEventDetails((prev) => ({ ...prev, location }))
-          }
-          startTime={eventDetails.startTime}
-          setStartTime={(startTime) =>
-            setEventDetails((prev) => ({ ...prev, startTime }))
-          }
-          endTime={eventDetails.endTime}
-          setEndTime={(endTime) =>
-            setEventDetails((prev) => ({ ...prev, endTime }))
-          }
+          title={title}
+          setTitle={setTitle}
+          description={description}
+          setDescription={setDescription}
+          location={location}
+          setLocation={setLocation}
+          startTime={startTime}
+          setStartTime={setStartTime}
+          endTime={endTime}
+          setEndTime={setEndTime}
           previewImageURL={previewImageURL}
           newImageURL={newImageURL}
           setNewImageURL={setNewImageURL}
@@ -403,7 +361,7 @@ export const EventPage = () => {
           <ModalContent>
             <ModalHeader>Confirm Delete</ModalHeader>
             <ModalBody>Are you sure you want to delete this event?</ModalBody>
-            <ModalFooter justifyContent={"flex-end"}>
+            <ModalFooter justifyContent={"center"}>
               <Flex gap={4}>
                 <Button variant="outline" onClick={() => setIsDeleting(false)}>
                   Cancel
@@ -425,7 +383,7 @@ export const EventPage = () => {
                 Are you sure you want to remove {selectedAttendee?.name}?
               </Text>
             </ModalBody>
-            <ModalFooter justifyContent={"flex-end"} gap= {4}>
+            <ModalFooter justifyContent={"center"}>
               <Button variant="outline" onClick={() => setIsRemoving(false)}>
                 Cancel
               </Button>
