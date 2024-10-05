@@ -27,7 +27,7 @@ export const EventCard = ({ event, user, onDelete, onEdit }) => {
           alt={event.title}
           borderRadius="md"
           width="100%"
-          height={{ base: "auto", md: "300px" }}
+          // height={{ base: "auto", md: "300px" }}
           objectFit="cover"
         />
         <Heading size={["md", "lg"]} color="blue.700" mt={4} mb={-4}>
